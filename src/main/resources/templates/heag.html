@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- 합쳐지고 최소화된 최신 CSS -->
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+
+<title>heag</title>
+</head>
+<body>
+	<section id="contact">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-12 text-center">
+					<div class="section-title">
+						<h2>UPLOAD FILE</h2>
+						<div class="center-block">
+							<form class="form-horizontal" th:action="@{/uploadfile}"
+								method="POST" enctype="multipart/form-data">
+								<div class="form-group">
+									<label class="col-md-1 control-label">카테고리</label>
+									<div class="col-md-10"> 
+										<select name="category">
+											<option value="HEAG">HEAG</option>
+											<option value="HEMN">HEMN</option>
+											<option value="HEWL">HEWL</option>
+											<option value="HEVW">HEVW</option>
+											<option value="HEES">HEES</option>
+										</select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label">버전</label> 
+									<div class="col-md-10">
+										<input type="text" class="form-control" placeholder="버전입력하세요*"
+											id="version" name="version" required="required">
+										<p class="help-block text-danger"></p>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label">구분</label>
+									 <div class="col-md-10">
+										<select name="distinction">
+											<option value="베타">베타</option>
+											<option value="정식">정식</option>
+										</select>
+									</div>
+								</div>
+								<div class="input-field col s6">
+									<label class="col-md-1 control-label">파일선택</label> <input
+										type="file" name="files" />
+								</div>
+								<div class="col-lg-12 text-center">
+									<button class="btn indigo waves-effect waves-light"
+										type="submit" name="save">
+										저장하기<i class="mdi-content-send right"></i>
+									</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<section class="light-bg">
+		<div class="col-md-12">
+			<table class="table table-bordered">
+				<thead>
+					<tr>
+						<th>No</th>
+						<th>카테고리</th>
+						<th>버전</th>
+						<th>구분</th>
+						<th>파일명</th>
+						<th>비고</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="postlist : ${postslist.content}">
+						<td th:text="${postlist.id}">No</td>
+						<td th:text="${postlist.category}">카테고리</td>
+						<td><a href="#" th:text="${postlist.version}"></a></td>
+						<td th:text="${postlist.distinction}">구분</td>
+						<td th:text="${postlist.fileName}">파일명</td>
+						<td><a href="#" th:data-target="|#Modal-${postlist.id}"
+							data-toggle="modal">수정</a></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+		<!--   <div class="col-md-12">
+		 		<ul class="pager">
+		 			<li class="previous" th:if=${!portfoliolist.first}>
+		 				<a th:href="|/portfolio?page=${portfoliolist.number-1}|">&larr; older posts </a>
+		 			</li> 
+		 			<li class="next" th:if=${!portfoliolist.last}>
+		 				<a th:href ="|/portfolio?page=${portfoliolist.number+1}|">newer posts &rarr;</a>
+		 			</li>
+		 		</ul>
+		 	</div>  -->
+	</section>
+	<!-- <div>
+		 		<a href="#" data-target="#modal2" data-toggle="modal">모달테스트</a>
+		 	</div>
+		 	<div class="modal fade" id="modal2">
+		 		 <div class="modal-dialog">
+   				 <div class="modal-content">
+    			 <div class="modal-header"></div>
+     			 <div class="modal-body">
+      				  Hello! Webisfree.com
+    			  </div>
+    		     <div class="modal-footer"></div>
+   				 </div>
+ 				 </div>
+		 	</div>
+		 -->
+	<div class="col-md-4">
+		<p>
+			홈으로 이동-><a href="/main">link</a>
+		</p>
+	</div>
+	<!-- modal -->
+	<div th:each="postsmodal : ${postslist.content}">
+		<form th:action="@{/updatepost}" method="POST">
+			<div class="modal fade" th:id="|Modal-${postsmodal.id}|"
+				tabindex="-1" role="modal" aria-labelledby="Modal-label-1">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal"
+								aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+							<h3>test</h3>
+						</div>
+						<div class="modal-body">
+							<table style="border: 1px solid; border-collapse: collapse;">
+								<tr style="border: solid 1px;">
+									<th style="border: solid 1px;">No</th>
+									<td style="border: solid 1px;"><input type="text"
+										th:value="${postsmodal.id}" name="id" readonly></td>
+								</tr>
+								<tr style="border: solid 1px;">
+									<th style="border: solid 1px;">카테고리</th>
+									<td style="border: solid 1px;"><input type="text"
+										th:value="${postsmodal.category}" name="category" readonly></td>
+								</tr>
+								<tr style="border: solid 1px;">
+									<th style="border: solid 1px;">버전</th>
+									<td style="border: solid 1px;"><input type="text"
+										th:value="${postsmodal.version}" name="version"></td>
+								</tr>
+								<tr style="border: solid 1px;">
+									<th style="border: solid 1px;">구분</th>
+									<td style="border: solid 1px;"><select name="distinction"
+										th:if="${postsmodal.distinction.equals('정식')}">
+											<option value="베타">베타</option>
+											<option value="정식" selected="selected">정식</option>
+									</select> <select name="distinction"
+										th:unless="${postsmodal.distinction.equals('정식')}">
+											<option value="베타" selected="selected">베타</option>
+											<option value="정식">정식</option>
+									</select></td>
+								</tr>
+								<tr style="border: solid 1px;">
+									<th style="border: solid 1px;">파일명</th>
+									<td style="border: solid 1px;"><input type="text"
+										th:value="${postsmodal.fileName}" name="fileName" readonly></td>
+								</tr>
+							</table>
+						</div>
+						<div class="modal-footer">
+							<button type="submit">수정</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+	<script
+		src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script
+		src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+</body>
+</html>

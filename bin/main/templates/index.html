@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- 합쳐지고 최소화된 최신 CSS -->
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+<title>Pakages</title>
+</head>
+<body>
+	<h1>카테고리선택</h1>
+	<th:block th:each="posts : ${postslist}">
+		<div class="col-md-4">
+			<span id="category" th:attr="data-gtype=${posts.category}"></span> <span
+				id="fileName" th:attr="data-gtype=${posts.fileName}"></span>
+			<h3 th:text="${posts.category}" th:id="${posts.category}"></h3>
+			<p>
+				<a th:text="|${posts.fileName} ${posts.version}|"
+					th:href="|/filedown?category=${posts.category}&fileName=${posts.fileName}|">
+					<!-- <th:onclick="javascript:down(document.getElementById('category').dataset.gtype, document.getElementById('fileName').dataset.gtype )"> -->
+				</a>
+			</p>
+		</div>
+	</th:block>
+	<section>
+		<div class="col-md-4">
+			<p>
+				관리자페이지이동-><a href="/posts">link</a>
+			</p>
+		</div>
+	</section>
+	<script
+		src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script
+		src="http://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
+	<script
+		src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+	<script src="js/main.js"></script>
+</body>
+</html>
