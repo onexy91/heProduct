@@ -20,7 +20,7 @@
 			<h3 th:text="${posts.category}" th:id="${posts.category}"></h3>
 			<p>
 				<a th:text="|${posts.fileName} ${posts.version}|"
-					th:href="|/filedown?category=${posts.category}&fileName=${posts.fileName}|">
+					th:href="|${fileDownURI}?category=${posts.category}&fileName=${posts.fileName}|">
 					<!-- <th:onclick="javascript:down(document.getElementById('category').dataset.gtype, document.getElementById('fileName').dataset.gtype )"> -->
 				</a>
 			</p>

@@ -25,6 +25,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.pshc.util.config.RestURIConstants;
 import com.pshc.util.dto.PostsRepository;
 import com.pshc.util.dto.UserRepository;
 import com.pshc.util.model.FileCommand;
@@ -32,7 +33,7 @@ import com.pshc.util.model.Member;
 import com.pshc.util.model.MemberRole;
 import com.pshc.util.model.Posts;
 import com.pshc.util.service.AwsService;
-import com.pshc.util.service.FileUpload;
+import com.pshc.util.service.FileUploadService;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,9 +43,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class MainController {
 
-	private UserRepository userRepasitory;
-	private PostsRepository postsRepasitory;
-	private FileUpload fileUpload;
+	private UserRepository userRepository;
+	private PostsRepository postsRepository;
 	private AwsService awsService;
 
 	protected String getRemoteIp() {
@@ -62,78 +62,63 @@ public class MainController {
 	protected String getClientInfo() {
 		return "C:" + getRemoteIp() + ", Rq:";
 	}
-	//로그인 view
+
+	// 로그인 view
 	@RequestMapping("/")
 	public String loginView() {
 		return "login";
 	}
 
 	@GetMapping("/main")
-	public String menuPageView(Model model) {
+	public String mainView(Model model) {
 		log.info(getClientInfo() + "/main");
 
 		// List<Posts> postList = postsRepasitory.findAll();
-		List<Posts> postList = postsRepasitory.findByDistinction("정식");
+		List<Posts> postList = postsRepository.findByDistinction("정식");
+		String fileDownURI = RestURIConstants.GET_FILE_DOWN;
 		model.addAttribute("postslist", postList);
+		model.addAttribute("fileDownURI", fileDownURI);
 
 		return "index";
 	}
-	
+
 	@RequestMapping("/login")
 	public String loginForm(HttpServletRequest request) {
 		String referer = request.getHeader("Referer");
 		request.getSession().setAttribute("prevPage", referer);
 		return "login";
 	}
-	//회원가입 view 
+
+	// 회원가입 view
 	@RequestMapping("/sign")
 	public String signUp() {
 
 		return "sign";
 	}
-	
-	//회원가입 Proc
+
+	// 회원가입 Proc
 	@PostMapping("/members")
-	public String insert(Member member) {
+	public String insertMember(Member member) {
 		MemberRole role = new MemberRole();
 		BCryptPasswordEncoder pEncoder = new BCryptPasswordEncoder();
 		member.setPassword(pEncoder.encode(member.getPassword()));
 		role.setRoleName("USER");
 		member.setRoles(Arrays.asList(role));
-		userRepasitory.save(member);
+		userRepository.save(member);
 		return "redirect:/";
 
-	}
-
-	@GetMapping("/posts")
-	public String postsView(Model model,
-			@PageableDefault(sort = { "id" }, direction = Direction.DESC, size = 10) Pageable pageable) {
-		Page<Posts> postsList = postsRepasitory.findAll(pageable);
-		model.addAttribute("postslist", postsList);
-		return "heag";
-	}
-
-	@RequestMapping("/uploadfile")
-	public String uploadFile(@RequestPart MultipartFile files, HttpServletRequest request) {
-		log.info(getClientInfo() + " /uploadfile " + files.getOriginalFilename());
-
-		if (!files.isEmpty()) {
-			fileUpload.doWork(request, files);
-			log.info("111111111");
-		}
-		return "redirect:/posts";
 	}
 
 	/*
 	 * ajax 로 post방식 하려했으나 stream 처리불가 로 getMapping
 	 */
-	@GetMapping("/filedown")
-	public void fileDown(FileCommand posts, HttpServletResponse response) {
-		log.info(getClientInfo() + "/filedown?" + posts.getCategory() + " " + posts.getFileName());
-		
+	@GetMapping(RestURIConstants.GET_FILE_DOWN)
+	public void getFileDown(FileCommand fileCommand, HttpServletResponse response) {
+		log.info(getClientInfo() + "/filedown?" + fileCommand.getCategory() + " " + fileCommand.getFileName());
+
 		OutputStream responseOut = null;
-		String bucketName = posts.getCategory();
-		String fileName = posts.getFileName();
+		String bucketName = fileCommand.getCategory();
+		String fileName = fileCommand.getFileName();
 
 		try {
 			response.setHeader("Content-Disposition", "attachment; filename=" + fileName);

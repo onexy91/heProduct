@@ -56,7 +56,7 @@
 										type="file" name="files" />
 								</div>
 								<div class="col-lg-12 text-center">
-									<button class="btn indigo waves-effect waves-light"
+									<button class="btn btn-lg btn-primary btn-block"
 										type="submit" name="save">
 										저장하기<i class="mdi-content-send right"></i>
 									</button>
@@ -95,16 +95,16 @@
 			</table>
 		</div>
 
-		<!--   <div class="col-md-12">
+		   <div class="col-md-12">
 		 		<ul class="pager">
-		 			<li class="previous" th:if=${!portfoliolist.first}>
-		 				<a th:href="|/portfolio?page=${portfoliolist.number-1}|">&larr; older posts </a>
+		 			<li class="previous" th:if=${!postslist.first}>
+		 				<a th:href="|/posts?page=${postslist.number-1}|">&larr; older posts </a>
 		 			</li> 
-		 			<li class="next" th:if=${!portfoliolist.last}>
-		 				<a th:href ="|/portfolio?page=${portfoliolist.number+1}|">newer posts &rarr;</a>
+		 			<li class="next" th:if=${!postslist.last}>
+		 				<a th:href ="|/posts?page=${postslist.number+1}|">newer posts &rarr;</a>
 		 			</li>
 		 		</ul>
-		 	</div>  -->
+		 	</div>  
 	</section>
 	<!-- <div>
 		 		<a href="#" data-target="#modal2" data-toggle="modal">모달테스트</a>
